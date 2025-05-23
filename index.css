@@ -493,4 +493,253 @@ body.light-mode .record-button.recording .record-button-inner { color: white; }
   .live-recording-timer { font-size: 36px; }
   .action-button { width: 44px; height: 44px; font-size: 16px; }
   .record-button { width: 64px; height: 64px; }
+
+  /* Responsive layout for TTS panel */
+  #app-body-container {
+    flex-direction: column; /* Stack STT and TTS panels vertically */
+  }
+
+  .main-content,
+  #tts-panel-container {
+    width: 100%; /* Both panels take full width */
+    height: 50vh; /* Each panel takes half the viewport height */
+    border-right: none; /* Remove side border */
+    border-bottom: 1px solid var(--color-border); /* Add bottom border to main-content */
+  }
+
+  #tts-panel-container {
+    border-bottom: none; /* No border at the very bottom of the app */
+    padding: 20px; /* Reduce padding for smaller screens */
+  }
+
+  .tts-panel-title {
+    font-size: 20px; /* Adjust title size */
+    margin-bottom: 16px;
+  }
+
+  #tts-input-text {
+    min-height: 100px; /* Adjust textarea height */
+  }
+
+  .tts-options {
+    flex-direction: column; /* Stack voice selector and button */
+    align-items: stretch; /* Make them full width */
+  }
+
+  #tts-generate-button.tts-button {
+    width: 100%; /* Full width button */
+  }
 }
+
+/* STT/TTS Panel Layout & Styling */
+#app-body-container {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  width: 100%;
+  overflow: hidden; /* Prevent app-body from creating scrollbars */
+}
+
+.main-content {
+  /* Already has flex: 1, display: flex, flex-direction: column from existing styles */
+  width: 50%;
+  border-right: 1px solid var(--color-border);
+  transition: width 0.3s ease, border-color var(--transition-normal);
+  /* overflow-y: auto; */ /* Let .note-content-wrapper handle its own scroll */
+}
+
+#tts-panel-container {
+  width: 50%;
+  padding: 32px 40px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  background-color: var(--color-bg-alt);
+  transition: width 0.3s ease, background-color var(--transition-normal);
+  height: 100%; /* Ensure it takes full height within app-body-container */
+}
+
+.tts-panel-title {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 24px;
+  font-family: var(--font-primary);
+  flex-shrink: 0; /* Prevent title from shrinking */
+}
+
+.tts-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex-grow: 1; /* Allow controls to take available space, useful if textarea is not fixed height */
+  min-height: 0; /* Allow shrinking if content is too large for the panel */
+}
+
+#tts-input-text {
+  width: 100%;
+  min-height: 150px;
+  flex-grow: 1; /* Allow textarea to take more space if available */
+  padding: 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  font-family: var(--font-primary);
+  font-size: 15px;
+  line-height: 1.6;
+  resize: vertical;
+  transition: background-color var(--transition-normal), border-color var(--transition-normal), color var(--transition-normal);
+}
+
+#tts-input-text:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-accent) 30%, transparent);
+}
+
+.tts-options {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0; /* Prevent options from shrinking */
+}
+
+#tts-voice-selector {
+  flex-grow: 1;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  font-family: var(--font-primary);
+  font-size: 14px;
+  height: 42px; /* Match common button height */
+  -webkit-appearance: none; /* Remove default styling on Safari/Chrome */
+  -moz-appearance: none; /* Remove default styling on Firefox */
+  appearance: none; /* Remove default styling */
+  background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5.833%207.917l4.167%204.166%204.167-4.166%22%20stroke%3D%22%236B7280%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E'); /* Basic chevron icon */
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 16px;
+  cursor: pointer;
+  transition: background-color var(--transition-normal), border-color var(--transition-normal), color var(--transition-normal);
+}
+body.light-mode #tts-voice-selector {
+  background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5.833%207.917l4.167%204.166%204.167-4.166%22%20stroke%3D%22%23A0A0A0%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E');
+}
+
+
+#tts-voice-selector:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-accent) 30%, transparent);
+}
+
+#tts-generate-button.tts-button {
+  padding: 0 20px; /* Horizontal padding */
+  height: 42px; /* Fixed height */
+  font-size: 15px;
+  font-weight: 500;
+  border-radius: 8px;
+  background-color: var(--color-accent);
+  color: white; /* Text color for accent button */
+  border: none;
+  cursor: pointer;
+  transition: background-color var(--transition-fast), transform var(--transition-fast);
+  font-family: var(--font-primary);
+  flex-shrink: 0; /* Prevent button from shrinking */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+body.light-mode #tts-generate-button.tts-button {
+  color: white; /* Ensure text is white on light mode accent */
+}
+
+#tts-generate-button.tts-button:hover {
+  background-color: color-mix(in srgb, var(--color-accent) 85%, black);
+  transform: scale(1.02);
+}
+
+#tts-generate-button.tts-button:active {
+  transform: scale(0.98);
+  background-color: color-mix(in srgb, var(--color-accent) 70%, black);
+}
+
+#tts-audio-player {
+  width: 100%;
+  margin-top: 10px;
+  flex-shrink: 0; /* Prevent audio player from shrinking */
+}
+
+/* Style the audio player to match the theme */
+#tts-audio-player::-webkit-media-controls-panel {
+  background-color: var(--color-surface);
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+}
+#tts-audio-player::-webkit-media-controls-play-button,
+#tts-audio-player::-webkit-media-controls-mute-button,
+#tts-audio-player::-webkit-media-controls-timeline-container,
+#tts-audio-player::-webkit-media-controls-current-time-display,
+#tts-audio-player::-webkit-media-controls-time-remaining-display,
+#tts-audio-player::-webkit-media-controls-volume-slider-container,
+#tts-audio-player::-webkit-media-controls-fullscreen-button {
+  filter: invert(0.8); /* Basic attempt to make controls visible in dark mode, may need refinement */
+}
+body.light-mode #tts-audio-player::-webkit-media-controls-play-button,
+body.light-mode #tts-audio-player::-webkit-media-controls-mute-button,
+body.light-mode #tts-audio-player::-webkit-media-controls-timeline-container,
+body.light-mode #tts-audio-player::-webkit-media-controls-current-time-display,
+body.light-mode #tts-audio-player::-webkit-media-controls-time-remaining-display,
+body.light-mode #tts-audio-player::-webkit-media-controls-volume-slider-container,
+body.light-mode #tts-audio-player::-webkit-media-controls-fullscreen-button {
+  filter: none;
+}
+
+
+#tts-status-message.status-message {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin-top: 10px;
+  min-height: 20px; /* Prevent layout shifts */
+  text-align: center;
+  font-family: var(--font-primary);
+  flex-shrink: 0; /* Prevent status message from shrinking */
+}
+
+/* Style for the "Copy STT to TTS" button */
+#copy-stt-to-tts-button.copy-button {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  width: 40px; /* Adjust size as needed */
+  height: 40px; /* Adjust size as needed */
+  border-radius: 50%; /* Or squared, matching other action buttons if they change */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-secondary);
+  font-size: 16px; /* Adjust icon size */
+  cursor: pointer;
+  transition: var(--transition-fast) background-color, var(--transition-fast) color, var(--transition-fast) border-color, var(--transition-fast) transform, var(--transition-fast) box-shadow;
+  box-shadow: var(--shadow-sm);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  margin-left: 16px; /* Add some space from the tab navigation */
+}
+
+#copy-stt-to-tts-button.copy-button:hover {
+  color: var(--color-text);
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: var(--shadow-md);
+  background-color: var(--color-surface-hover);
+  border-color: var(--glass-highlight);
+}
+
+/*
+.recording-interface.is-live .note-header #copy-stt-to-tts-button.copy-button {
+   display: none;
+}
+*/

@@ -6,6 +6,7 @@
 
 import {GoogleGenAI} from '@google/genai';
 import {marked} from 'marked';
+import { initializeTTSPanel } from './src/ttsHandler'; // Add this import
 
 const MODEL_NAME = 'gemini-2.5-flash-preview-05-20';
 
@@ -48,7 +49,7 @@ class VoiceNotesApp {
 
   constructor() {
     this.genAI = new GoogleGenAI({
-      apiKey: process.env.API_KEY!,
+      apiKey: import.meta.env.VITE_GEMINI_API_KEY!,
       apiVersion: 'v1alpha',
     });
 
@@ -117,6 +118,58 @@ class VoiceNotesApp {
     this.newButton.addEventListener('click', () => this.createNewNote());
     this.themeToggleButton.addEventListener('click', () => this.toggleTheme());
     window.addEventListener('resize', this.handleResize.bind(this));
+
+    const copyButton = document.getElementById('copy-stt-to-tts-button') as HTMLButtonElement | null;
+    const ttsInputText = document.getElementById('tts-input-text') as HTMLTextAreaElement | null;
+
+    if (copyButton && ttsInputText) {
+      copyButton.addEventListener('click', () => {
+        if (!ttsInputText) { // Redundant check, but good practice
+          console.warn("TTS input text area not found for copy operation.");
+          return;
+        }
+
+        let textToCopy = '';
+        const polishedTabActive = document.querySelector('.tab-button[data-tab="note"].active');
+        
+        if (polishedTabActive) {
+          textToCopy = this.polishedNote.innerText || this.polishedNote.textContent || '';
+          if (this.polishedNote.classList.contains('placeholder-active')) {
+            textToCopy = ''; 
+          }
+        } else {
+          textToCopy = this.rawTranscription.textContent || '';
+          if (this.rawTranscription.classList.contains('placeholder-active')) {
+            textToCopy = '';
+          }
+        }
+
+        ttsInputText.value = textToCopy.trim();
+        ttsInputText.focus();
+        
+        const originalIcon = copyButton.innerHTML;
+        copyButton.innerHTML = '<i class="fas fa-check"></i>';
+        copyButton.disabled = true;
+        setTimeout(() => {
+          copyButton.innerHTML = originalIcon;
+          copyButton.disabled = false;
+        }, 1500);
+
+        const ttsStatusMessage = document.getElementById('tts-status-message') as HTMLDivElement | null;
+        if (ttsStatusMessage) {
+          if (textToCopy.trim()) {
+              ttsStatusMessage.textContent = 'Text copied from STT. Ready to generate audio.';
+              ttsStatusMessage.style.color = 'var(--color-text-secondary)';
+          } else {
+              ttsStatusMessage.textContent = 'Copied empty text from STT.';
+              ttsStatusMessage.style.color = 'var(--color-text-tertiary)';
+          }
+        }
+      });
+    } else {
+      if (!copyButton) console.warn("Copy STT to TTS button not found.");
+      if (!ttsInputText) console.warn("TTS input text area not found for copy button binding.");
+    }
   }
 
   private handleResize(): void {
@@ -819,6 +872,8 @@ document.addEventListener('DOMContentLoaded', () => {
         updatePlaceholderState();
       });
     });
+
+  initializeTTSPanel(); // Add this line
 });
 
 export {};

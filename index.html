@@ -22,9 +22,10 @@
   </head>
   <body>
     <div class="app-container">
-      <div class="main-content">
-        <div class="note-area">
-          <div class="note-header">
+      <div id="app-body-container">
+        <div class="main-content">
+          <div class="note-area">
+            <div class="note-header">
             <div class="editor-title" contenteditable="true" placeholder="Untitled Note">
               Untitled Note
             </div>
@@ -35,6 +36,9 @@
                 <div class="active-tab-indicator"></div>
               </div>
             </div>
+            <button id="copy-stt-to-tts-button" class="action-button copy-button" title="Copy STT Output to TTS Input">
+              <i class="fas fa-arrow-right-to-bracket"></i>
+            </button>
           </div>
 
           <div class="note-content-wrapper">
@@ -89,7 +93,23 @@
           </div>
         </div>
       </div>
+      <div id="tts-panel-container" class="tts-panel">
+        <h2 class="tts-panel-title">Text-to-Speech</h2>
+        <div class="tts-controls">
+          <textarea id="tts-input-text" placeholder="Enter text to generate audio..."></textarea>
+          <div class="tts-options">
+            <select id="tts-voice-selector">
+              <!-- Voice options will be populated by JavaScript -->
+              <option value="">Loading voices...</option>
+            </select>
+            <button id="tts-generate-button" class="action-button tts-button">Generate & Play</button>
+          </div>
+          <audio id="tts-audio-player" controls></audio>
+          <div id="tts-status-message" class="status-message"></div>
+        </div>
+      </div>
     </div>
+  </div>
 
     <div id="micStatus" class="debug-panel"></div>
 
